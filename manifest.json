@@ -1,0 +1,16 @@
+{
+  "name": "Interrobanged",
+  "version": "1.0",
+  "description": "A simple script that adds edits interrobangs into your web page",
+  "icons": { "128": "icon.png" },
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": false
+  },
+  "browser_action": {
+    "defuault_icon": "icon.png",
+    "default_title": "Interrobanged",
+    "popup": "popup.html"
+  }
+  "manifest_version": 2
+}
