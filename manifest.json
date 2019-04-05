@@ -9,7 +9,7 @@
     "default_title": "Interrobanged",
     "default_popup": "popup.html"
   },
-  "permissions": ["activeTab"],
+  "permissions": ["tabs", "notifications", "http://*/", "https://*/", "storage"],
   "background": {
     "scripts": ["background.js"],
     "persistent": true

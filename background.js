@@ -1,4 +1,7 @@
-chrome.browserAction.onClicked.addListener(function(tab) {
-  // for the current tab, inject the "function.js" file & execute it
-  chrome.tabs.executeScript('function.js', () => console.log('sup'));
+chrome.tabs.onUpdated.addListener(function() {
+  chrome.tabs.query({}, function(tabs) {
+    for (var i = 0; i < tabs.length; i++) {
+      chrome.tabs.executeScript(tabs[i].id, { file: 'function.js' });
+    }
+  });
 });
