@@ -59,9 +59,6 @@ var interrobanged = function() {
   }
 };
 
-setTimeout(interrobanged, 2000);
-window.interrobangedInterval = setInterval(interrobanged, 5 * 60 * 1000);
-
 //TODO
 // allow a element with text and a span element inside be edited
 // Most elements that contain user facing text will not have children, but unfortuantely this doesn't
