@@ -49,12 +49,19 @@ var interrobanged = function() {
     var nodeTextContent = currentNode.innerText;
     var contentChanged = false;
 
-    // if the current node is not in the list of the ones we want to edit
-    // and if the element has no inner text then we skip it.
+    // if the current node is not in the list of the ones we want to edit, or if the
+    // element has no inner text, or if the node has children, then we skip it. It's
+    // too risky changing nodes that are tied to the function of the site. The lowest
+    // level ones are typically display and text editable level elements, which is
+    // what we should focus on changing. We lose the ability to be able to change
+    // an element like this: <p>Hello <strong>Amogh</strong>!?</p> but that is an ok
+    // compromise. Having this many filters will also significantly reduce time to
+    // preform action.
+
     if (
       nodesToEdit.indexOf(currentNode.nodeName) === -1 ||
       nodeTextContent.length === 0 ||
-      nodeTextContent.length > 3000
+      currentNode.childElementCount > 0
     ) {
       continue;
     }

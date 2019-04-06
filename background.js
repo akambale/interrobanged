@@ -11,7 +11,7 @@ chrome.tabs.onUpdated.addListener(function() {
         if (object.scriptRunning) {
           chrome.tabs.executeScript(tabs[i].id, { file: 'start.js' });
           // manages icon, switching it to on
-          chrome.browserAction.setIcon({ path: 'on.png', tabId: tabs[i].id });
+          chrome.browserAction.setIcon({ path: 'icon-on.png', tabId: tabs[i].id });
         }
       });
     }
@@ -31,13 +31,13 @@ chrome.browserAction.onClicked.addListener(function(unusedTabVar) {
           chrome.storage.local.set({ scriptRunning: false });
 
           // manages icon, switching it to off
-          chrome.browserAction.setIcon({ path: 'off.png', tabId: tabs[i].id });
+          chrome.browserAction.setIcon({ path: 'icon-off.png', tabId: tabs[i].id });
         } else {
           chrome.tabs.executeScript(tabs[i].id, { file: 'start.js' });
           chrome.storage.local.set({ scriptRunning: true });
 
           // manages icon, switching it to on
-          chrome.browserAction.setIcon({ path: 'on.png', tabId: tabs[i].id });
+          chrome.browserAction.setIcon({ path: 'icon-on.png', tabId: tabs[i].id });
         }
       }
     });
