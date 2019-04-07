@@ -3,9 +3,6 @@ chrome.tabs.onUpdated.addListener(function() {
   // loops through all tabs
   chrome.tabs.query({}, function(tabs) {
     for (var i = 0; i < tabs.length; i++) {
-      // adds interrobang script
-      chrome.tabs.executeScript(tabs[i].id, { file: 'function.js' });
-
       // if script is on, start it on the tab
       chrome.storage.local.get(['scriptRunning'], function(object) {
         if (object.scriptRunning) {
