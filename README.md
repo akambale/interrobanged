@@ -12,9 +12,9 @@ After making swaps, your cursor may move to a different spot in the text. This w
 
 ## Why build‽
 
-I listened to an episode of [99 Percent Invisible](https://99percentinvisible.org/episode/interrobang/) about the interrobang and I was inspired to create this chrome extension. I have always been interested by the interrobang, but like they discuss in the podcast episode, the reason this punctuation mark has never caught on is because it is not easily accessible. To include an interrobang into your text, one would have to insert the symbol manually in you text editor of choice, or copy-paste it from elsewhere. One solution is to set up text replacement on your phone, but that does not address where people do most of their day to day typing. So I asked myself: _what can I do to help people start using interrobangs on the web‽_
+I listened to an episode of [99 Percent Invisible](https://99percentinvisible.org/episode/interrobang/) about the interrobang and I was inspired to create this chrome extension. I have always been interested by the interrobang, but like they discuss in the podcast episode, the reason this punctuation mark has never caught on is because it is not easily accessible; a writer has to make the deliberate decision to include one and then insert it in their text editor of choice. One solution is to set up text replacement on your phone, but that does not address where people do most of their day to day typing.
 
-To achieve our goal of making the interrobang a commonly used symbol, people need to start using it without thinking. I designed this chrome extension to do just that. If you toggle the extensions symbol, it will immediately go through your webpage and make changes to your text. It will find "!?" and " ?!" symbols and replace them with interrobangs. If you leave the extension on, it will make these changes every minute across all of your tabs. It may even update these symbols to interrobangs for text you cannot edit, just so you can properly read everyone's excited questions.
+To achieve our goal of making the interrobang a commonly used symbol, people need to start using it without thinking. I designed this chrome extension to do just that on the web. If you toggle the extensions symbol, it will immediately go through your webpage and make changes to your text. It will find "!?" and " ?!" symbols and replace them with interrobangs. If you leave the extension on, it will make these changes every minute across all of your tabs. It may even update text you cannot edit, just so you can properly read everyone's excited questions.
 
 Soon everyday correspondence and text on the web will be filled with interrobangs!
 
@@ -36,8 +36,8 @@ Instead, I tried selecting all nodes and looping through and replacing the inner
 
 A loop for all the nodes; an indexOf to identify where the target strings are; a while loop to replace the target string as many times as needed. Time complexity comes to O(n^3), yikes!
 
-To improve on this, a better function would be to eliminate the need for the while loop. We could take each innerText and start replacing the target substrings as we go through it; only requiring one loop. I didn't choose this method initially because changing the length of a string while you are iterating through it makes the logic more complicated increasing the risk of bugs.
-
 ## Perfect is the enemy of good
 
-With the if statement on the second line of my logic and the fact that there aren't going to be many target substrings on the page, the changing function manages to preform quickly enough. Any interrobang changes on my webpage when I toggle the extension seem to happen instantly; well underneath the 200 milliseconds threshold of human observability.
+To improve on this, a better function would be to eliminate the need for the while loop. We could take each innerText and start replacing the target substrings as we go through it; only requiring one loop. I didn't choose this method initially because changing the length of a string while you are iterating through it makes the logic more complicated increasing the risk of bugs.
+
+With the if statement on the second line of my logic and the fact that there are not going to be many target substrings on the page, the changing function manages to preform quickly enough. Any interrobang changes on my webpage when I toggle the extension seem to happen instantly; well underneath the 200 milliseconds threshold of human observability.
