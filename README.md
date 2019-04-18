@@ -1,4 +1,4 @@
-### Download the extension on the [Chrome Web Store](https://chrome.google.com/webstore/category/extensions?hl=en)
+### Download the extension on the [Chrome Web Store](https://chrome.google.com/webstore/detail/interrobanged/fmofaoljbgemhaicpbfpjipjdjbkhoeg)
 
 ## About The Extension
 
