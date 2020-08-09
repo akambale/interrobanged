@@ -1,4 +1,4 @@
-var interrobanged = function() {
+var interrobanged = function () {
   function moveCursorToEndOfInput(el) {
     if (typeof el.selectionStart === 'number') {
       el.selectionStart = el.selectionEnd = el.value.length;
@@ -114,14 +114,20 @@ var interrobanged = function() {
         break;
       } else {
         contentChanged = true;
-        nodeTextContent = nodeTextContent.slice(0, index) + '‽' + nodeTextContent.slice(index + 2);
+        nodeTextContent =
+          nodeTextContent.slice(0, index) +
+          '‽' +
+          nodeTextContent.slice(index + 2);
       }
     }
 
     // only modify text of node if a change was made
     if (contentChanged) {
       contentChangeCount++;
-      if (currentNode.nodeName === 'INPUT' || currentNode.nodeName === 'TEXTAREA') {
+      if (
+        currentNode.nodeName === 'INPUT' ||
+        currentNode.nodeName === 'TEXTAREA'
+      ) {
         currentNode.value = nodeTextContent;
         if (document.activeElement === currentNode) {
           moveCursorToEndOfInput(currentNode);

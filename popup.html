@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      form {
+        display: flex;
+        flex-direction: column;
+      }
+      body {
+        width: 190px;
+      }
+      #int {
+        width: 34px;
+      }
+      #checkbox-row {
+        padding: 5px 0px;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+      }
+    </style>
+  </head>
+  <body>
+    <form>
+      <button id="insert">Insert Now</button>
+      <div id="checkbox-row">
+        <input type="checkbox" id="checkbox" />
+        <label for="checkbox">Auto-Replace On All Tabs</label>
+      </div>
+      <div id="interval-row">
+        Every
+        <input id="int" type="number" min="1" max="120" step="1" value="0" />
+        <select id="select">
+          <option value="minutes">Minutes</option>
+          <option value="seconds">Seconds</option>
+        </select>
+      </div>
+    </form>
+    <script type="text/javascript" src="popup.js"></script>
+  </body>
+</html>
