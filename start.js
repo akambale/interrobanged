@@ -1,112 +1,31 @@
-var interrobanged = function() {
-  function moveCursorToEndOfInput(el) {
-    if (typeof el.selectionStart === 'number') {
-      el.selectionStart = el.selectionEnd = el.value.length;
-    } else if (typeof el.createTextRange !== 'undefined') {
-      el.focus();
-      var range = el.createTextRange();
-      range.collapse(false);
-      range.select();
-    }
+class Interrobanged {
+  constructor() {
+    this.inputs = new Set();
+    this.contentEdits = new Set();
+    
+    const oneMinute = 60 * 1000;
+
+    this.intervalIds = [
+      setInterval(this.updateTextNodes, oneMinute),
+      setInterval(this.addBlurHandlerToInputs, oneMinute),
+      setInterval(this.addBlurHandlerToContenteditable, oneMinute),
+    ];
+
+    this.updateTextNodes();
+    this.addBlurHandlerToInputs();
+    this.addBlurHandlerToContenteditable();
   }
 
-  // TODO function doesn't seem to work as intended. Need to debug further
-  function moveCursorToEndOfContenteditable(ele) {
-    var range, selection;
-    if (document.createRange) {
-      //Firefox, Chrome, Opera, Safari, IE 9+
-      range = document.createRange(); //Create a range (a range is a like the selection but invisible)
-      range.selectNodeContents(ele); //Select the entire contents of the element with the range
-      range.collapse(false); //collapse the range to the end point. false means collapse to end rather than the start
-      selection = window.getSelection(); //get the selection object (allows you to change selection)
-      selection.removeAllRanges(); //remove any selections already made
-      selection.addRange(range); //make the range you have just created the visible selection
-    } else if (document.selection) {
-      //IE 8 and lower
-      range = document.body.createTextRange(); //Create a range (a range is a like the selection but invisible)
-      range.moveToElementText(ele); //Select the entire contents of the element with the range
-      range.collapse(false); //collapse the range to the end point. false means collapse to end rather than the start
-      range.select(); //Select the range (make it the visible selection
-    }
+  clearAllIntervals() {
+    this.intervalIds.forEach(clearInterval);
   }
 
-  var contentChangeCount = 0;
-  var allNodes = document.querySelectorAll('*');
-  // we want to limit the types of elements changing. Specifically looking at nodes that contain use facing text
-  // this is to speed up the algorithm as well as prevent us from breaking nodes like <script>
-  var nodesToEdit = [
-    'TT',
-    'I',
-    'B',
-    'BIG',
-    'SMALL',
-    'EM',
-    'STRONG',
-    'CITE',
-    'ABBR',
-    'SUB',
-    'SUP',
-    'SPAN',
-    'DIV',
-    'A',
-    'P',
-    'H1',
-    'H2',
-    'H3',
-    'H4',
-    'H5',
-    'H6',
-    'PRE',
-    'Q',
-    'INS',
-    'DEL',
-    'DT',
-    'DD',
-    'LI',
-    'LABEL',
-    'OPTION',
-    'TEXTAREA',
-    'LEGEND',
-    'BUTTON',
-    'CAPTION',
-    'TD',
-    'TH',
-    'TITLE',
-    'INPUT',
-  ];
-
-  for (var i = 0; i < allNodes.length; i++) {
-    var currentNode = allNodes[i];
-    var nodeTextContent = currentNode.innerText;
-    var contentChanged = false;
-
-    // for inputs, we need to change the value property
-    // instead of the inner text
-    if (currentNode.nodeName === 'INPUT') {
-      nodeTextContent = currentNode.value;
-    }
-
-    // if the current node is not in the list of the ones we want to edit, or if the
-    // element has no inner text, or if the node has children, then we skip it. It's
-    // too risky changing nodes that are tied to the function of the site. The lowest
-    // level ones are typically display and text editable level elements, which is
-    // what we should focus on changing. We lose the ability to be able to change
-    // an element like this: <p>Hello <strong>Amogh</strong>!?</p> but that is an ok
-    // compromise. Having this many filters will also significantly reduce time to
-    // preform action.
-    if (
-      nodesToEdit.indexOf(currentNode.nodeName) === -1 ||
-      nodeTextContent.length === 0 ||
-      currentNode.childElementCount > 0
-    ) {
-      continue;
-    }
-
+  replaceStr(text, contentChanged = false) {
     while (true) {
-      var index = nodeTextContent.indexOf('!?');
+      let index = text.indexOf('!?');
       // if target string is not found, switch to alternative target string
       if (index === -1) {
-        index = nodeTextContent.indexOf('?!');
+        index = text.indexOf('?!');
       }
 
       // if neither target string is found, break out of loop
@@ -114,31 +33,77 @@ var interrobanged = function() {
         break;
       } else {
         contentChanged = true;
-        nodeTextContent = nodeTextContent.slice(0, index) + '‽' + nodeTextContent.slice(index + 2);
+        text = text.slice(0, index) + '‽' + text.slice(index + 2);
       }
     }
+    return {text, contentChanged};
+  }
 
-    // only modify text of node if a change was made
-    if (contentChanged) {
-      contentChangeCount++;
-      if (currentNode.nodeName === 'INPUT' || currentNode.nodeName === 'TEXTAREA') {
-        currentNode.value = nodeTextContent;
-        if (document.activeElement === currentNode) {
-          moveCursorToEndOfInput(currentNode);
-        }
-      } else {
-        currentNode.innerText = nodeTextContent;
-        if (document.activeElement === currentNode) {
-          moveCursorToEndOfContenteditable(currentNode);
-        }
+  textNodesUnder(el) {
+    let node;
+    const arr = [];
+    const walk = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null, false);
+    while(node=walk.nextNode()) {
+      arr.push(node);
+    }
+    return arr;
+  }
+
+  updateTextNodes() {
+    const allNodes = this.textNodesUnder(document.body)
+
+    for (let i = 0; i < allNodes.length; i++) {
+      const currentNode = allNodes[i];
+
+      // don't edit script inner text or content editable
+      if (currentNode.isContentEditable) continue;
+      if (currentNode.parentElement.nodeName === 'SCRIPT') continue;
+
+      const nodeTextContent = currentNode.textContent;
+
+
+      const results = this.replaceStr(nodeTextContent);
+      
+      if (results.contentChanged) {
+        currentNode.textContent = results.text;
       }
     }
   }
 
-  if (contentChangeCount > 0) {
-    console.log(contentChangeCount + ' Interrobang swaps made');
-  }
-};
+  addBlurHandlerToInputs() {
+    const context = this;
+    document.querySelectorAll('input[type=text], textarea').forEach(node => {
+      if (context.inputs.has(node)) return;
+      context.inputs.add(node);
 
-interrobangedInterval = setInterval(interrobanged, 60 * 1000);
-interrobanged();
+      node.addEventListener('blur', e => {
+        var results = context.replaceStr(e.target.value);
+    
+        if (results.contentChanged) {
+          e.target.value = results.text;
+        }
+      });
+    });
+  }
+
+  addBlurHandlerToContenteditable() {
+    const context = this;
+    document.querySelectorAll('[contenteditable=true]').forEach(node => {
+      if (context.contentEdits.has(node)) return;
+      context.contentEdits.add(node);
+
+      const textNodes = context.textNodesUnder(node);
+      textNodes.forEach(currentNode => {
+        currentNode.addEventListener('blur', e => {
+          const results = context.replaceStr(e.target.textContent);
+
+          if (results.contentChanged) {
+            e.target.textContent = results.text;
+          }
+        });
+      });
+    });
+  }
+}
+
+window.interrobanged = new Interrobanged();

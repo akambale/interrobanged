@@ -2,13 +2,13 @@
   "manifest_version": 2,
   "name": "Interrobanged",
   "description": "A simple script that adds edits interrobangs into your web page",
-  "version": "1.0",
-  "icons": { "128": "icon-off.png" },
+  "version": "2.0",
+  "icons": { "128": "icon-on.png" },
   "browser_action": {
-    "default_icon": "icon-off.png",
+    "default_icon": "icon-on.png",
     "default_title": "Interrobanged"
   },
-  "permissions": ["tabs", "notifications", "http://*/", "https://*/", "storage"],
+  "permissions": ["tabs", "http://*/", "https://*/", "storage"],
   "background": {
     "scripts": ["background.js"],
     "persistent": true

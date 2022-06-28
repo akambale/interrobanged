@@ -1,2 +1,1 @@
-clearInterval(window.interrobangedInterval);
-delete window.interrobangedInterval;
+window.interrobanged?.clearAllIntervals();
